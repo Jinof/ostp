@@ -1,3 +1,6 @@
+use std::io::BufReader;
+use std::io::BufRead;
+use std::fs::File;
 use structopt::StructOpt;
 
 
@@ -6,17 +9,23 @@ use structopt::StructOpt;
 struct Cli {
     /// The pattern to look for
     pattern: String,
-    /// The path to the file to read    #[structopt(parse(from_os_str))]
+    /// The path to the file to read    
+    #[structopt(parse(from_os_str))]
     path: std::path::PathBuf,
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let args = Cli::from_args();
-    let content = std::fs::read_to_string(&args.path)
-    .expect("could not read file");
-    for line in content.lines() {
+    let f = File::open(&args.path)?;
+    let mut reader = BufReader::new(f);
+    let mut line = String::new();
+    while reader.read_line(&mut line).unwrap() > 0 {
         if line.contains(&args.pattern) {
-            println!("{}", line);
+            println!("{}", line.trim_end());
         }
+        // line.clear() clear the line read previously.
+        line.clear();
     }
+
+    Ok(())
 }
