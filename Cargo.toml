@@ -1,5 +1,5 @@
 [package]
-name = "grrs"
+name = "ostp"
 version = "0.1.0"
 authors = ["Jinof <Jinof@foxmail.com>"]
 edition = "2018"
